@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Return of the Jedi & the American Revolution: Interactive History Simulation</title>
+<style>
+  :root{
+    --ink:#172033; --muted:#5c667a; --paper:#f6f3ea; --card:#fffdf7;
+    --blue:#243b64; --red:#8b2f2f; --gold:#c58b2b; --green:#2f6b4f;
+    --border:#d9d3c5; --good:#246b46; --bad:#9a3434;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:linear-gradient(180deg,#eee9dd,#faf8f2);font-family:system-ui,-apple-system,Segoe UI,Arial,sans-serif;color:var(--ink);line-height:1.5}
+  .wrap{max-width:1050px;margin:auto;padding:24px}
+  header{background:linear-gradient(135deg,#172b4d,#314d78);color:white;border-radius:20px;padding:30px 28px;margin-bottom:18px;box-shadow:0 8px 22px #0001}
+  h1{font-size:clamp(28px,5vw,46px);line-height:1.05;margin:0 0 10px}
+  h2{margin-top:0;color:var(--blue)}
+  h3{margin-bottom:7px}
+  .subtitle{font-size:1.08rem;max-width:850px;opacity:.94}
+  .badge{display:inline-block;padding:5px 10px;border-radius:999px;background:#ffffff1c;border:1px solid #ffffff40;font-size:.82rem;margin:4px 4px 0 0}
+  .notice{background:#fff7db;border-left:5px solid var(--gold);padding:14px 16px;border-radius:10px;margin:16px 0}
+  .tabs{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 20px}
+  .tab{border:1px solid var(--border);background:white;padding:11px 14px;border-radius:10px;cursor:pointer;font-weight:700;color:var(--blue)}
+  .tab.active,.tab:hover{background:var(--blue);color:white}
+  .panel{display:none}
+  .panel.active{display:block}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:15px;padding:18px;box-shadow:0 4px 12px #0000000a}
+  .pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:stretch}
+  .side{border:1px solid var(--border);border-radius:12px;padding:14px;background:white}
+  .swatch{font-size:2rem}
+  .label{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:800}
+  .compare{width:100%;border-collapse:collapse;background:white;border-radius:12px;overflow:hidden}
+  .compare th,.compare td{border:1px solid var(--border);padding:11px;text-align:left;vertical-align:top}
+  .compare th{background:#ebe7dc;color:var(--blue)}
+  .choice{width:100%;text-align:left;border:1px solid var(--border);background:white;padding:14px;border-radius:11px;margin:8px 0;cursor:pointer}
+  .choice:hover{border-color:var(--blue);background:#f3f6fb}
+  .choice.correct{border-color:var(--good);background:#eaf6ef}
+  .choice.incorrect{border-color:var(--bad);background:#fbeeee}
+  .feedback{margin-top:10px;padding:12px;border-radius:10px;background:#f0f3f7;display:none}
+  .feedback.show{display:block}
+  .progress{height:10px;background:#e3e0d7;border-radius:99px;overflow:hidden;margin:10px 0 18px}
+  .progress>div{height:100%;background:var(--gold);width:0;transition:width .25s}
+  .meter{font-weight:800;color:var(--blue)}
+  .mission{border-left:5px solid var(--blue);padding:14px 16px;background:#f0f4fa;border-radius:10px;margin:12px 0}
+  .timeline{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+  .step{position:relative;padding:16px;border:1px solid var(--border);border-radius:12px;background:white}
+  .num{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--blue);color:white;font-weight:800}
+  .source{font-size:.85rem;color:var(--muted)}
+  .reflection textarea{width:100%;min-height:130px;border:1px solid var(--border);border-radius:10px;padding:12px;font:inherit}
+  .btn{border:0;border-radius:10px;background:var(--blue);color:white;padding:11px 16px;font-weight:800;cursor:pointer;margin-top:8px}
+  .btn.secondary{background:#687386}
+  .score{font-size:1.25rem;font-weight:900;color:var(--blue)}
+  .small{font-size:.9rem;color:var(--muted)}
+  .tag{display:inline-block;font-size:.76rem;padding:3px 7px;border-radius:999px;background:#ece8dd;margin:3px}
+  .footer{margin-top:22px;padding:18px;background:#ece8dd;border-radius:15px;font-size:.9rem}
+  @media(max-width:650px){.pair{grid-template-columns:1fr}.wrap{padding:14px}header{padding:22px 18px}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+<header>
+  <div class="label" style="color:#dfe8f7">HISTORY × POP CULTURE SIMULATION</div>
+  <h1>Return of the Jedi vs. the American Revolution</h1>
+  <div class="subtitle">Can you recognize the Revolutionary-era ideas, people, and strategies hidden inside the Battle of Endor? Explore the analogy, make decisions, and test your historical reasoning.</div>
+  <span class="badge">No login</span><span class="badge">Student-paced</span><span class="badge">Self-checking</span>
+</header>
+
+<div class="notice"><strong>Important:</strong> This simulation uses <em>analogy</em>. Star Wars is fictional and the American Revolution was a real historical conflict. Some comparisons are strong thematic parallels; others are simplified classroom connections. Your job is to decide <strong>why</strong> a comparison works and where it breaks down.</div>
+
+<div class="tabs" role="tablist">
+  <button class="tab active" data-tab="map">1. Character & Symbol Map</button>
+  <button class="tab" data-tab="missions">2. Missions</button>
+  <button class="tab" data-tab="ideas">3. Ideas Behind the Fight</button>
+  <button class="tab" data-tab="timeline">4. Two Revolutions</button>
+  <button class="tab" data-tab="quiz">5. Final Challenge</button>
+</div>
+
+<section id="map" class="panel active">
+  <h2>Build the Connection Map</h2>
+  <p>Click each card to reveal the classroom comparison. Pay attention to the <strong>reason</strong> behind the comparison.</p>
+  <div class="grid">
+    <div class="card"><div class="swatch">⚔️</div><h3>Jedi Council → Sons of Liberty</h3><p><strong>Classroom analogy:</strong> Both can represent organized resistance and people who challenge an established authority.</p><p class="small"><strong>History check:</strong> The Jedi Council was not literally the Sons of Liberty. The Sons of Liberty were a colonial resistance organization that protested British policies.</p></div>
+    <div class="card"><div class="swatch">👑</div><h3>Darth Vader → King George III</h3><p>Both can be used as symbols of the powerful side of the conflict in this analogy: Vader serves the Empire, while George III was Britain's king during the Revolution.</p><p class="small">The comparison is simplified: George III was a constitutional monarch operating within Britain's political system; he was not a fictional Sith enforcer.</p></div>
+    <div class="card"><div class="swatch">🚀</div><h3>British Warships → Star Destroyers</h3><p>Both represent the military power of a large empire used to project force over a rebellion.</p><p class="small">British naval power was real and operated through fleets, ships, sailors, bases, and supply systems—not giant space battleships.</p></div>
+    <div class="card"><div class="swatch">🪖</div><h3>British Redcoats → Stormtroopers</h3><p>Both can represent regular troops serving the established government.</p><p class="small">Redcoats were British soldiers; stormtroopers are fictional Imperial troops. The tactics, weapons, training, and political context were very different.</p></div>
+    <div class="card"><div class="swatch">🗽</div><h3>Rebel Alliance → American Rebels</h3><p>This is one of the clearest broad parallels: a resistance movement fights a much larger imperial power while seeking a different political future.</p><p class="small">The American Revolution involved Patriots, Loyalists, enslaved people, Native nations, European allies, civilians, and competing interests—not one unified “rebel” group.</p></div>
+    <div class="card"><div class="swatch">🌲</div><h3>Ewoks → Native Americans</h3><p>The classroom comparison focuses on a local people whose knowledge of their environment helps an outside resistance movement.</p><p class="small"><strong>Major caution:</strong> Native nations were independent political communities with different goals. Their relationships with Patriots and Britain varied greatly. Ewoks should not be treated as a one-to-one stand-in for all Native Americans.</p></div>
+    <div class="card"><div class="swatch">✨</div><h3>The Force → Enlightenment natural rights</h3><p>The analogy connects the Force's idea of an underlying moral order to Enlightenment ideas that people possess rights and are not simply born to be ruled by another person.</p><p class="small">The Force is a fictional spiritual concept. Natural rights were political and philosophical ideas discussed by thinkers such as John Locke.</p></div>
+    <div class="card"><div class="swatch">🛸</div><h3>Han Solo & Chewbacca → John Hancock</h3><p>Han and Chewie are associated with the world of smugglers and independent merchants. John Hancock was a wealthy Boston merchant whose ships and commercial activities became entangled in colonial resistance and customs enforcement.</p><p class="small">Calling Hancock simply a “smuggler” is an oversimplification. He was accused in a famous customs case involving his ship <em>Liberty</em>; the case helped make him a prominent opponent of British authority.</p></div>
+    <div class="card"><div class="swatch">💥</div><h3>Death Star → British military power</h3><p>The Death Star can symbolize overwhelming imperial military power. In a history comparison, it is useful for thinking about how a rebellion faces a stronger military opponent.</p><p class="small">There was no single British weapon equivalent to the Death Star. Britain's advantage came from armies, navy, money, logistics, and imperial resources.</p></div>
+    <div class="card"><div class="swatch">🛡️</div><h3>Shield Generator → British control & defenses</h3><p>Han's ground team must disable the shield so the Rebel fleet can attack. This resembles the idea that a larger military power can depend on strategic positions, forts, supply lines, and communications.</p><p class="small">It is a strategy analogy, not a direct historical match.</p></div>
+    <div class="card"><div class="swatch">🤝</div><h3>Rebels + Ewoks → Patriots + Allies</h3><p>Different groups with different backgrounds cooperate around a shared objective.</p><p class="small">During the American Revolution, France became a crucial ally of the American cause, while Native nations made different choices based on their own interests and circumstances.</p></div>
+    <div class="card"><div class="swatch">🔥</div><h3>Battle of Endor → Yorktown</h3><p>Both can be used as examples of a decisive military turning point in a larger struggle for independence.</p><p class="small">The analogy should not erase the larger wars around them. Yorktown did not instantly end every military action, but Cornwallis's surrender was decisive and major fighting soon moved toward a peace settlement.</p></div>
+  </div>
+</section>
+
+<section id="missions" class="panel">
+  <h2>Mission 1: Choose the Best Historical Connection</h2>
+  <div class="mission"><strong>Situation:</strong> A student says, “The Ewoks are exactly the same as Native Americans.” What is the best historian's response?</div>
+  <button class="choice" data-q="m1" data-c="1">A. Yes. Every Native nation fought on the Patriot side just like the Ewoks.</button>
+  <button class="choice" data-q="m1">B. The comparison can help explain the importance of local knowledge and alliances, but Native nations had different goals and made different choices.</button>
+  <button class="choice" data-q="m1">C. No comparison between fiction and history is ever useful.</button>
+  <div class="feedback" id="m1fb"></div>
+
+  <h2 style="margin-top:28px">Mission 2: Han's Smuggling Connection</h2>
+  <div class="mission"><strong>Situation:</strong> Which statement best describes the John Hancock comparison?</div>
+  <button class="choice" data-q="m2">A. Hancock was literally a Star Wars-style smuggler who flew ships.</button>
+  <button class="choice" data-q="m2" data-c="1">B. Hancock was a wealthy merchant whose commercial activities and customs conflict became part of his revolutionary-era public identity; “smuggler” is a simplified comparison.</button>
+  <button class="choice" data-q="m2">C. Hancock had no connection to commerce.</button>
+  <div class="feedback" id="m2fb"></div>
+
+  <h2 style="margin-top:28px">Mission 3: Strategy at Endor</h2>
+  <div class="mission"><strong>Situation:</strong> Why does Han's ground mission matter to the larger Rebel attack?</div>
+  <button class="choice" data-q="m3">A. The ground team is fighting for no reason; only Luke's duel matters.</button>
+  <button class="choice" data-q="m3" data-c="1">B. The ground mission disables the shield, allowing the Rebel fleet to attack the Death Star.</button>
+  <button class="choice" data-q="m3">C. The Ewoks destroy the entire Imperial fleet by themselves.</button>
+  <div class="feedback" id="m3fb"></div>
+</section>
+
+<section id="ideas" class="panel">
+  <h2>Mission 4: What Is the “Force” Analogy?</h2>
+  <p>In this simulation, the Force is used as a metaphor for the idea that freedom and equality are connected to a moral order beyond the ruler's personal wishes.</p>
+  <div class="pair">
+    <div class="side"><div class="label">Star Wars</div><h3>“The Force”</h3><p>A fictional energy/moral order connecting living things. Jedi teachings emphasize resisting domination by the dark side.</p></div>
+    <div class="side"><div class="label">Enlightenment</div><h3>Natural Rights</h3><p>Thinkers such as John Locke argued that people possess natural rights and that legitimate government exists to protect those rights.</p></div>
+  </div>
+  <div class="mission"><strong>Declaration connection:</strong> The Declaration says that people are “created equal” and have “unalienable Rights,” including “Life, Liberty and the pursuit of Happiness.” It also says governments derive their “just powers” from the “consent of the governed.”</div>
+  <p>These ideas help explain why a rebellion can be presented not merely as a fight over who rules, but as an argument about <strong>why government has authority in the first place</strong>.</p>
+  <div class="grid">
+    <div class="card"><h3>John Locke</h3><p><strong>Natural rights:</strong> people possess rights that government should protect.</p><p><strong>Consent:</strong> legitimate government depends on the agreement of the governed.</p><p><strong>Resistance:</strong> if government violates its purpose, people can challenge or replace it.</p></div>
+    <div class="card"><h3>Return of the Jedi</h3><p><strong>Freedom:</strong> the Rebel Alliance fights Imperial domination.</p><p><strong>Choice:</strong> Luke's confrontation with Vader centers on whether Vader can choose to reject the Emperor.</p><p><strong>Unity:</strong> different groups cooperate against Imperial control.</p></div>
+  </div>
+  <div class="notice"><strong>Think like a historian:</strong> “The Force = Locke” is not a historical fact. It is a teaching analogy designed to help you connect a fictional story about freedom with real Enlightenment arguments about natural rights and government.</div>
+</section>
+
+<section id="timeline" class="panel">
+  <h2>Mission 5: Put the Stories Side by Side</h2>
+  <div class="timeline">
+    <div class="step"><span class="num">1</span><h3>Pressure</h3><p><strong>Star Wars:</strong> The Empire maintains control over the galaxy.</p><p><strong>American Revolution:</strong> Britain increased control and revenue policies after the French and Indian War, creating conflicts over power, rights, and representation.</p></div>
+    <div class="step"><span class="num">2</span><h3>Resistance</h3><p><strong>Star Wars:</strong> The Rebel Alliance organizes against the Empire.</p><p><strong>American Revolution:</strong> Colonial resistance organizations and the Continental Congress helped coordinate opposition to British rule.</p></div>
+    <div class="step"><span class="num">3</span><h3>Ideas</h3><p><strong>Star Wars:</strong> Characters frame the conflict around freedom from Imperial domination.</p><p><strong>American Revolution:</strong> Enlightenment ideas and political traditions helped colonists argue about rights and legitimate government.</p></div>
+    <div class="step"><span class="num">4</span><h3>Alliances</h3><p><strong>Star Wars:</strong> Rebels cooperate with the Ewoks at Endor.</p><p><strong>American Revolution:</strong> Americans received important assistance from France; Native nations made varied choices rather than forming one side.</p></div>
+    <div class="step"><span class="num">5</span><h3>Turning Point</h3><p><strong>Star Wars:</strong> The shield falls and the Death Star II is destroyed.</p><p><strong>American Revolution:</strong> Yorktown in 1781 produced Cornwallis's surrender and became a decisive turning point toward the end of the war.</p></div>
+    <div class="step"><span class="num">6</span><h3>Aftermath</h3><p><strong>Star Wars:</strong> The Empire's leadership collapses and the Rebel victory opens a new political era.</p><p><strong>American Revolution:</strong> Independence was followed by the difficult task of building a new government, eventually producing the Constitution.</p></div>
+  </div>
+  <div class="notice"><strong>Key difference:</strong> The American Revolution was not simply “good rebels vs. evil empire.” Loyalists, Patriots, undecided colonists, enslaved people, women, Native nations, and foreign powers experienced the Revolution differently.</div>
+</section>
+
+<section id="quiz" class="panel">
+  <h2>Final Challenge: Can You Explain the Analogy?</h2>
+  <div class="score">Score: <span id="score">0</span> / 8</div>
+  <div class="progress"><div id="bar"></div></div>
+  <div id="quizBox"></div>
+  <button class="btn secondary" id="restart" type="button">Restart Challenge</button>
+  <div class="reflection" style="margin-top:22px">
+    <h3>Exit Ticket</h3>
+    <p>In 3–5 sentences, explain <strong>one comparison that works well</strong> and <strong>one comparison that breaks down</strong>. Use at least one specific historical fact.</p>
+    <textarea placeholder="My comparison..."></textarea>
+  </div>
+</section>
+
+<div class="footer">
+  <strong>Teacher/source notes:</strong> The Star Wars details are based on the official StarWars.com descriptions of <em>Return of the Jedi</em>, the Rebel Alliance, Han Solo, and the Ewoks. The American Revolution and Declaration connections are based primarily on Library of Congress educational materials. This simulation deliberately labels simplified analogies so students can distinguish historical evidence from fictional parallels.
+  <div class="source" style="margin-top:8px">
+    Sources: StarWars.com, “Return of the Jedi,” “Rebel Alliance,” “Han Solo,” “Ewok,” and “Return of the Jedi Themes”; Library of Congress, “The American Revolution,” “Creating the Declaration of Independence,” “Consent of the Governed,” “All Men are Created Equal,” “Revolution of the Mind,” and John Hancock materials.
+  </div>
+</div>
+</div>
+
+<script>
+(function(){
+  const root=document.getElementById('app');
+  const tabs=[...root.querySelectorAll('.tab')];
+  const panels=[...root.querySelectorAll('.panel')];
+  tabs.forEach(btn=>btn.addEventListener('click',()=>{
+    tabs.forEach(b=>b.classList.toggle('active',b===btn));
+    panels.forEach(p=>p.classList.toggle('active',p.id===btn.dataset.tab));
+    window.scrollTo({top:0,behavior:'smooth'});
+  }));
+
+  const answers={
+    m1:"Correct. Native nations had their own political goals and made different choices during the Revolution. The Ewok comparison is useful mainly for thinking about local knowledge and alliances.",
+    m2:"Correct. Hancock was a major merchant and revolutionary leader. His customs conflict and the Liberty case contributed to his public image, but simply calling him a “smuggler” leaves out important context.",
+    m3:"Correct. Han's team must disable the shield generator so the Rebel fleet can attack the Death Star II."
+  };
+  root.querySelectorAll('.choice').forEach(ch=>{
+    ch.addEventListener('click',()=>{
+      const q=ch.dataset.q;
+      const choices=root.querySelectorAll('.choice[data-q="'+q+'"]');
+      choices.forEach(x=>x.classList.remove('correct','incorrect'));
+      const fb=document.getElementById(q+'fb');
+      if(ch.dataset.c==='1'){
+        ch.classList.add('correct');
+        fb.textContent=answers[q];
+      }else{
+        ch.classList.add('incorrect');
+        fb.textContent="Not quite. Re-read the comparison and look for the answer that recognizes both the useful connection and the historical limits.";
+      }
+      fb.classList.add('show');
+    });
+  });
+
+  const quiz=[
+    ["Which fictional group is used as the broadest analogy for American rebels?","Rebel Alliance","British Redcoats","Imperial Senate","Jedi Council"],
+    ["Which historical idea best matches the simulation's “Force” metaphor?","Natural rights and human freedom","Mercantilism","Divine right of kings","Feudalism"],
+    ["Why is “Ewoks = Native Americans” an incomplete comparison?","Native nations had different political goals and alliances","Ewoks were British soldiers","Native nations all lived on Endor","The American Revolution had no alliances"],
+    ["What makes the Han Solo–John Hancock comparison useful?","Both are connected to commerce and the world of smuggling/trade, though Hancock was a real merchant and political leader","Both flew spaceships","Both were fictional characters","Both were British generals"],
+    ["What does the Death Star best symbolize in the analogy?","Overwhelming imperial military power","The Declaration of Independence","A colonial town meeting","A French alliance"],
+    ["What is a major theme connecting the two stories?","Resistance to domination and the pursuit of political freedom","The importance of absolute monarchy","The end of all alliances","The rejection of individual rights"],
+    ["What happened at Yorktown in 1781?","Cornwallis surrendered to American and allied forces","The Declaration was signed","George III abdicated","The Boston Tea Party occurred"],
+    ["What should a historian do with a fictional analogy?","Use it to make connections while checking where the comparison stops matching the evidence","Treat the fiction as primary evidence","Assume every character equals a historical person","Avoid comparing fiction and history at all"]
+  ];
+  let score=0, answered=0;
+  const box=document.getElementById('quizBox'), scoreEl=document.getElementById('score'), bar=document.getElementById('bar');
+  function renderQuiz(){
+    box.innerHTML='';
+    quiz.forEach((q,i)=>{
+      const card=document.createElement('div'); card.className='card'; card.style.marginBottom='12px';
+      const h=document.createElement('h3'); h.textContent=(i+1)+". "+q[0]; card.appendChild(h);
+      q.slice(1).forEach((opt,j)=>{
+        const b=document.createElement('button'); b.type='button'; b.className='choice'; b.textContent=opt;
+        b.addEventListener('click',()=>{
+          if(card.dataset.done)return;
+          card.dataset.done='1'; answered++;
+          if(j===0){score++;b.classList.add('correct')}else{b.classList.add('incorrect')}
+          [...card.querySelectorAll('.choice')].forEach((x,k)=>{if(k===0)x.classList.add('correct')});
+          scoreEl.textContent=score; bar.style.width=(answered/quiz.length*100)+'%';
+          if(answered===quiz.length){
+            const done=document.createElement('div');done.className='notice';
+            done.innerHTML='<strong>Challenge complete!</strong> Your score is '+score+' / '+quiz.length+'. Review any missed questions, then complete the exit ticket.';
+            box.appendChild(done);
+          }
+        });
+        card.appendChild(b);
+      });
+      box.appendChild(card);
+    });
+  }
+  document.getElementById('restart').addEventListener('click',()=>{score=0;answered=0;scoreEl.textContent='0';bar.style.width='0%';renderQuiz()});
+  renderQuiz();
+})();
+</script>
+</body>
+</html>
